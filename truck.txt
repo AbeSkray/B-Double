@@ -1,0 +1,64 @@
+!  The  simulation  will  update the  model every tick  at 100  Hz.  Control
+!  inputs  will be sampled  at 10  Hz.  The display  will be updated  at 1Hz
+!  until the last command is processed, and then at 10 Hz thereafter.
+
+!  Initially,  the truck  is parked in  neutral, engine stopped,  park brake
+!  set.  Start  the engine by holding the throttle trigger  for two seconds. 
+!  Case-insensitive  but, by convention, 'T'  for hold and 't'  for release. 
+!  Similarly, 'G' for upshift and 'g' for downshift.  'A' and 'B' for couple
+!  and 'a' and 'b' for decouple.
+!
+T 20 t				! separated by 20 ticks
+
+!  We  could shut the engine  down again, with  the gear in neutral  and the
+!  park  brake set, by holding T  again for two seconds;  but instead, we'll
+!  pulse  T to release the  Park brakes, (while meanwhile  applying the foot
+!  brake).
+T t
+
+!  Now engage first  gear by holding T and clicking the  Gear selector to go
+!  up one gear into first.  With the throttle held, we should now accelerate
+!  away from the stand still.
+T G
+
+!  We can use  L, R and C to turn the  steering wheels progressively Left or
+!  Right or Center them, respectively.  Then are ten degrees of Left and ten
+!  of  Right.  It  takes time  to turn  the wheel.   (We could  use L  as an
+!  increment  and Ln  as a goto  degree n.  Then  we could  use l0 or  r0 to
+!  center the wheels.
+
+!  this delay is to allow the truck to accelerate to an appreciable speed.
+!50 L9 10 Q			! quit
+
+10 L1 10 L2 10 L5 10 L9
+
+!  You  downshift by releasing  T and clicking  G to downshift.   Brakes are
+!  applied in the degree you are attempting to downshift.
+10 G 30 t
+
+!  Engage cruise control.
+T t
+R9 10 g 40 g 10 C		! downshift should disengage cruise
+
+!  You  cannot engage  a reverse gear,  (R1, R2,  R3), until the  vehicle is
+!  stopped.  You do it by  clicking the gear selector while stopped and with
+!  T released.
+20 g T				! now reversing
+
+!  While stopped and under a trailer, you can type A or B to couple/uncouple
+!  the specified trailer.
+20 t G				! stop
+20 A				! attempt to attach the A-trailer
+
+!  Set the Park brake and shut down the engine.
+!
+T 20 t T 20 t
+
+!   Turn the  front wheels  Left or  Right  up to  45 degrees,  in 5  degree
+!  increments, using L1..L9 and R1..R9.  Use  L0 or R0 to center the wheels. 
+!  It takes 1 second for the wheels to swivel 45 degrees.
+
+!  NB: holding T in a Gear,  maintains the target speed at a "nice" RPM.  To
+!  accelerate, you select a higher  gear, but the RPM increases to the shift
+!  point, then the gear shifts up  and the RPM falls once more to the "nice"
+!  RPM.
