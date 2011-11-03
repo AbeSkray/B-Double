@@ -1,0 +1,70 @@
+[111017]
+
+  The length of the wheelbase is w.  The angle of the (front) steering
+  wheels is theta.  The turn radius, r, measured from the turn center to the
+  steering wheels is r = w/sin(theta).  These wheels will follow this (outer)
+  circle for an angle of arc given by v*t/(2*pi*r).  The radius of the inner
+  circle that the rear wheels follow is rr = r*cos(theta) and they'll follow
+  the same angle, of course.
+
+[111002]
+
+  Keeping things simple: if the control sample rate is a harmonic of the
+  display refresh rate, then: the timer triggers the sample of the controls
+  and a model recalculation update followed possibly by a display refresh if
+  called for.
+
+  This means that the code to sample the joystick, plus the code to update
+  the screen can be compartmentalized.
+
+  A minimum version would just display the state of the controls on the
+  screen, plus draw the truck.
+
+[110929]
+
+  Use the joystick twist to steer the wheels.
+
+  The trigger engages power.
+
+  The thumb button controls the transmission:
+  Gears are:
+    R3	-5 kmh
+    R2	-2 kmh
+    R1	-1 kmh
+    NP	neutral/park
+    1	5 kmh
+    2	10
+    3	15
+    4	20
+    5	30
+    6	40
+    7	50
+    8	60
+    9	70
+    10	80
+    11	90
+    12	100 kmh
+
+  The gear shift button increases the gear selection when the throttle is
+  engaged and decreases it when the throttle is disengaged.
+
+  The truck accelerates to and holds target speed when the throttle is
+  engaged.
+
+  The truck coasts down in speed toward zero while the throttle is
+  disengaged.  But brakes are used while the speed is higher than the target
+  speed.  Changing down gears increases the level of braking.
+
+  If you coast down to a slower speed and then downshift, gears will be
+  jumped down to that appropriate for the current speed.
+
+  Indicators show speed, the current gear, (N in neutral while still moving
+  and P when parked), and whether Brakes are being applied.
+
+  Provisional:
+  When the speed is zero, the truck is positioned in the middle of the
+  screen.  As the speed increases in either direction, the truck moves
+  proportionately to the edge furthest from the direction of motion.  This,
+  in order to give the greatest view of what is approaching.  Or else, just
+  zoom out as the speed increases.  Hmmm, might lose the sense of motion,
+  though, which might be important while reversing.
