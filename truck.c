@@ -776,8 +776,12 @@ void model_advance(Model *model) {
 	When turning left, the center is 90 degrees to the left; otherwise,
 	90 degrees to the right.
     */
-    double gamma = tractor->hdng + (tractor->steer > 0 ? 90 : -90);
+    //double gamma = tractor->hdng + (tractor->steer > 0 ? 90 : -90);
+    double gamma = tractor->hdng 
+      + tractor->steer 
+      + (tractor->steer > 0 ? 90 : -90);
     gamma = (90 - gamma) * Pi /180;
+
     Point cent;
     cent.x = tractor->pos.x + rf * cos(gamma);
     cent.y = tractor->pos.y + rf * sin(gamma);
