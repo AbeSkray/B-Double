@@ -1,4 +1,4 @@
-package knowles;
+package bdouble;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

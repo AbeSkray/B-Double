@@ -1,4 +1,4 @@
-package knowles;
+package bdouble;
 
 import java.awt.GraphicsConfiguration;
 import javax.swing.JFrame;
