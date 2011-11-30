@@ -1,0 +1,3 @@
+Consider trying VisualSwing4Eclipse plugin (GUI designer)
+
+How do I exclude files/directories from 'git status'?
