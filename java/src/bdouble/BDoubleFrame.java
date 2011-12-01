@@ -1,12 +1,20 @@
 package bdouble;
 
+import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class BDoubleFrame extends JFrame {
 
 	// Constructors
 	
+	/**
+	 * UID for serialization
+	 */
+	private static final long serialVersionUID = 1431124527015618316L;
+
 	/**
 	 * Default Constructor
 	 */
@@ -49,7 +57,14 @@ public class BDoubleFrame extends JFrame {
 	private void initialize() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(0, 0, 400, 300);
-		this.pack();
+		//this.pack();
+		
+		this.setLayout(new BorderLayout());
+		this.add(new JButton("1"), BorderLayout.NORTH);
+		this.add(new JButton("2"), BorderLayout.SOUTH);
+		this.add(new JButton("3"), BorderLayout.WEST);
+		this.add(new JButton("4"), BorderLayout.EAST);
+		this.add(new JButton("5"), BorderLayout.CENTER);
 	}
 	
 }
