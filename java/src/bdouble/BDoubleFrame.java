@@ -1,6 +1,7 @@
 package bdouble;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 
 import javax.swing.JButton;
@@ -56,15 +57,17 @@ public class BDoubleFrame extends JFrame {
 	 */
 	private void initialize() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(0, 0, 400, 300);
+		this.setBounds(0, 0, 600, 400);
 		//this.pack();
 		
 		this.setLayout(new BorderLayout());
-		this.add(new JButton("1"), BorderLayout.NORTH);
-		this.add(new JButton("2"), BorderLayout.SOUTH);
-		this.add(new JButton("3"), BorderLayout.WEST);
-		this.add(new JButton("4"), BorderLayout.EAST);
-		this.add(new JButton("5"), BorderLayout.CENTER);
+		//this.add(new JButton("1"), BorderLayout.PAGE_START);
+		InstrumentPanel instrument1 = new InstrumentPanel();
+		instrument1.setPreferredSize(new Dimension(200, 400));
+		this.add(new InstrumentPanel(), BorderLayout.PAGE_END);
+		//this.add(new JButton("3"), BorderLayout.WEST);
+		//this.add(new JButton("4"), BorderLayout.EAST);
+		//this.add(new JButton("5"), BorderLayout.CENTER);
 	}
 	
 }
