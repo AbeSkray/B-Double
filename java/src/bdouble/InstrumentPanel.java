@@ -1,9 +1,11 @@
 package bdouble;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -65,6 +67,21 @@ public class InstrumentPanel extends JPanel {
 		this.add(new JButton("4"));
 		this.add(new JButton("5"));
 		this.add(new JButton("6"));
+	}
+	
+
+	/**
+	 * Test Main
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("InstrumentPanel Test");
+		frame.setLayout(new FlowLayout());
+		frame.setBounds(0, 0, 300, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.add(new InstrumentPanel());
+		frame.setVisible(true);
 	}
 
 }

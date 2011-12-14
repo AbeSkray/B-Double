@@ -66,7 +66,8 @@ public class BDoubleFrame extends JFrame {
 		instrument1.setPreferredSize(new Dimension(200, 400));
 		this.add(new InstrumentPanel(), BorderLayout.PAGE_END);
 		//this.add(new JButton("3"), BorderLayout.WEST);
-		//this.add(new JButton("4"), BorderLayout.EAST);
+		TestControlPanel testControl1 = new TestControlPanel();
+		this.add(testControl1, BorderLayout.LINE_END);
 		//this.add(new JButton("5"), BorderLayout.CENTER);
 	}
 	

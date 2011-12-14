@@ -1,3 +1,20 @@
 Consider trying VisualSwing4Eclipse plugin (GUI designer)
+Or Window Builder? - had trouble installing... 
 
 How do I exclude files/directories from 'git status'?
+.gitignore file -- just like .cvsignore
+
+Abstractly, what are the user control inputs to the sim?
+ o Throttle 
+   - either on or off
+   - completely binary
+   - button down, button up
+ o Steering
+   - a one-dimensional value between -1.0 and 1.0?
+ o Transmission
+   - a one-off instantaneous event
+   - context in terms of throttle determines action
+TestControlPanel
+ o Throttle could be a checkbox
+ o Steering could be a slider
+ o Transmission could be a button
