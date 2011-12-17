@@ -18,3 +18,9 @@ TestControlPanel
  o Throttle could be a checkbox
  o Steering could be a slider
  o Transmission could be a button
+
+javahidapi
+ o can use either libusb or hidraw
+   - libusb
+     o default
+     o why does it need write-access to /dev/bus/usb/005/005?
