@@ -12,6 +12,14 @@ import com.codeminders.hidapi.*;
 public class HidControl {
 
 	/**
+	 * Static call to load native library for hidapi (JNI)
+	 */
+    static
+    {
+        System.loadLibrary("hidapi-jni");
+    }	
+	
+	/**
 	 * Test Main
 	 * @param args
 	 */
