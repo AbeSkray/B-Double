@@ -1,0 +1,51 @@
+This is a quick guide for setting up the javahidapi library. Some steps may
+be left out.
+
+**Get the B-Double hidapi branch**
+  git fetch
+  git checkout hidapi
+
+**Get B-Double set up in Eclipse**
+  Add Java Project to your workspace
+  Uncheck 'Use default location'
+  Use B-Double/java/src
+  Name it 'B-Double'
+
+**Get javahidapi**
+  The project is hosted on Google Code.
+  hg clone https://code.google.com/p/javahidapi/
+  Take a look at javahidapi/linux/README.txt
+    You can choose between Libusb or Hidraw. I got Libusb to work:
+      sudo apt-get install libusb-1.0-0-dev
+  Next, look at javahidapi/README.txt; those instructions are useful:
+    1. make -C linux
+    2. ant
+  Next:
+    3. Confirm javahidapi/bin/hidapi.jar
+    4. Edit javahidapi/build.xml
+       In the 'run' target, change the java.library.path to
+       ${basedir}/linux
+       (instead of ${basedir}/mac)
+    5. (Optional) try: ant run
+       If you get permissions errors, try: sudo chmod 666 /dev/usb/bus/005/*
+
+**Set up build path in Eclipse**
+  1. Right-click B-Double project
+  2. Build Path -> Configure Build Path
+  3. Libraries Tab
+  4. Add Variable...
+     Add a JAVAHIDAPI_HOME variable
+     This should be the base directory for the hidapi project
+     ex.: '/home/aknowles/projects/javahidapi'
+     JAVAHIDAPI_HOME/bin/hidapi.jar should already be in the project classpath
+  5. Expand the classpath entry
+     Edit the 'Native library location' to the correct absolute path
+     For some reason JAVAHIDAPI_HOME/linux doesn't work here :-/
+
+**Run Test Main from Eclipse**
+  1. Right-click on HidControl.java
+  2. Run as Java Application
+  3. If you get write permissions error(s) try something like:
+     sudo chmod 666 /dev/usb/bus/005/*
+  4. You should get a list of all USB HID devices connected to the machine
+     (make sure to connect some!)
