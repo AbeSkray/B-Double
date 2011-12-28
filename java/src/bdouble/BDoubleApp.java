@@ -5,7 +5,7 @@ import javax.swing.SwingUtilities;
 
 public class BDoubleApp implements Runnable {
 	
-	@Override
+	// @Override
 	public void run() {
 		BDoubleFrame frame = new BDoubleFrame("B-Double");
 		frame.setVisible(true);		
