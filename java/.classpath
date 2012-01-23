@@ -7,5 +7,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/aknowles/projects/javahidapi/linux"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="MIGLAYOUT_HOME/miglayout-4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
