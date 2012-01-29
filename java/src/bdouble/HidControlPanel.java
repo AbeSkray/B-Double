@@ -1,5 +1,6 @@
 package bdouble;
 
+import java.awt.Component;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,11 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -70,6 +74,7 @@ public class HidControlPanel extends JPanel implements ActionListener {
 		deviceListModel = new DefaultListModel();
 		deviceListView = new JList();
 		deviceListView.setModel(deviceListModel);
+		deviceListView.setCellRenderer(new DeviceListCellRenderer());
 		
 		// initialize components
 		listButton = new JButton("List Devices");
@@ -87,6 +92,26 @@ public class HidControlPanel extends JPanel implements ActionListener {
 		this.add(clearSelButton, "wrap");
 		this.add(deviceListView, "span 4");
 	}
+	
+	protected class DeviceListCellRenderer extends DefaultListCellRenderer
+		implements ListCellRenderer
+	{
+		public Component getListCellRendererComponent(
+				JList list,              // the list
+				Object value,            // value to display
+				int index,               // cell index
+				boolean isSelected,      // is the cell selected
+				boolean cellHasFocus)    // does the cell have focus)
+		{
+			Component result = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			if (value instanceof HIDDeviceInfo) {
+				HIDDeviceInfo deviceInfo = (HIDDeviceInfo) value;
+				String s = deviceInfo.getProduct_string();
+				((JLabel) result).setText(s);
+			}
+			return result;
+		}		
+	}
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		Object source = actionEvent.getSource();
@@ -98,7 +123,9 @@ public class HidControlPanel extends JPanel implements ActionListener {
 				HIDDeviceInfo[] deviceInfos = HIDManager.listDevices();
 				List<HIDDeviceInfo> list = Arrays.asList(deviceInfos);
 				for (Iterator<HIDDeviceInfo> i = list.iterator(); i.hasNext(); ) {
-					deviceListModel.addElement(i.next());
+					HIDDeviceInfo deviceInfo = i.next();
+					deviceListModel.addElement(deviceInfo);
+					System.out.println(deviceInfo.getProduct_string());
 				}
 			} catch (IOException ioException) {
 				ioException.printStackTrace();				
