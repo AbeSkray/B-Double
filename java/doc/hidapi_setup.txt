@@ -26,8 +26,9 @@ be left out.
        In the 'run' target, change the java.library.path to
        ${basedir}/linux
        (instead of ${basedir}/mac)
-    5. (Optional) try: ant run
-       If you get permissions errors, try: sudo chmod 666 /dev/usb/bus/005/*
+    5. ant jar (this creates javahidapi/bin/hidapi.jar)
+    6. (Optional) try: ant run
+       If you get permissions errors, try: sudo chmod 666 /dev/bus/usb/005/*
 
 **Set up build path in Eclipse**
   1. Right-click B-Double project
