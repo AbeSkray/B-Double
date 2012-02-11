@@ -1,0 +1,38 @@
+After setting up the HIDAPI library, you may notice that you get some error
+messages regarding write permissions needed for device nodes in /dev/bus/usb.
+As described in hidapi_setup.txt, you can get around these errors by using the
+chmod command for each USB HID you have connected, but this can get tedious
+very quickly.
+
+To automate this, you can write some udev rules to recognize devices you use
+frequently and set their permissions accordingly.
+
+Most of what you need to know about this is outlined very nicely here:
+http://reactivated.net/writing_udev_rules.html
+
+However, this page is a little out of date, and a little lengthy, so here are
+some bullet points to make things faster and smoother:
+ 1. You're going to add a new file: /etc/udev/rules.d/10-local.rules
+ 2. 'udevinfo' doesn't seem to exist, use 'udevadm' instead
+ 3. Specifically: udevadm info -q all --attribute-walk -n <deviceName>
+ 4. Figuring out <deviceName> is a little tricky, more below
+
+In order to write your custom local rules file, you'll need some info about
+the device(s) you want to recognize. Here's a walkthrough:
+ 1. I followed hidapi_setup.txt and am able to make calls to HIDManager.
+ 2. However, I get errors like: 
+    libusb couldn't open the USB device /dev/bus/usb/005/002: Permission denied
+    libusb requires write acces to USB device nodes
+ 3. So <deviceName> is /dev/bus/usb/005/002
+ 4. I can get info with:
+    udevadm info -q all --attribute-walk -n /dev/bus/usb/005/002
+ 5. This yields a long list of info about the device
+ 6. So I pick a few attributes and add this line to my local rules file:
+    ATTR{manufacturer}=="PIXART", ATTR{product}=="USB OPTICAL MOUSE", SYMLINK+="mouse", MODE:="0666"
+ 7. Make sure to use the ":=" operator for MODE. This makes sure that any rules
+    run after my custom rule do not re-assign a new value to MODE. udev runs
+    rules files in alphabetical order, so '10-local.rules' will usually get run
+    first.
+ 8. Now when I reconnect my Pixart optical mouse, it shows up as /dev/mouse
+    and it has read and write permissions for everyone.
+    
