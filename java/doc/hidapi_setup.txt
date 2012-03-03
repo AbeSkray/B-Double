@@ -17,17 +17,16 @@ be left out.
   Take a look at javahidapi/linux/README.txt
     You can choose between Libusb or Hidraw. I got Libusb to work:
       sudo apt-get install libusb-1.0-0-dev
+      sudo apt-get install libudev-dev
   Next, look at javahidapi/README.txt; those instructions are useful:
     1. make -C linux
     2. ant
-  Next:
-    3. Confirm javahidapi/bin/hidapi.jar
-    4. Edit javahidapi/build.xml
+    3. Edit javahidapi/build.xml
        In the 'run' target, change the java.library.path to
        ${basedir}/linux
        (instead of ${basedir}/mac)
-    5. ant jar (this creates javahidapi/bin/hidapi.jar)
-    6. (Optional) try: ant run
+    4. ant jar (this creates javahidapi/bin/hidapi.jar)
+    5. (Optional) try: ant run
        If you get permissions errors, try: sudo chmod 666 /dev/bus/usb/005/*
 
 **Set up build path in Eclipse**
