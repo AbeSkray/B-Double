@@ -17,14 +17,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.codeminders.hidapi.HIDDevice;
 import com.codeminders.hidapi.HIDDeviceInfo;
+import com.codeminders.hidapi.HIDDeviceNotFoundException;
 import com.codeminders.hidapi.HIDManager;
 
-public class HidControlPanel extends JPanel implements ActionListener {
+public class HidControlPanel extends JPanel
+	implements ActionListener, ListSelectionListener
+{
 
 	/**
 	 * Serialization
@@ -56,25 +64,31 @@ public class HidControlPanel extends JPanel implements ActionListener {
 		initialize();
 	}
 	
-	// Member variables
+	// Member variables GUI components
 	private JList deviceListView;
 	private DefaultListModel deviceListModel;
 	private JButton listButton;
 	private JButton testButton;
 	private JButton clearButton;
 	private JButton clearSelButton;
+	private JButton readDevButton;
+	private JTextArea textArea;
+	
+	// Member variables
+	private HIDDevice hidDevice;
+	boolean isReadingDevice;
 	
 	private void initialize() {
+		isReadingDevice = false;
 		this.setLayout(new MigLayout());
 		
 		// initialize JList
-		Integer[] ints = new Integer[] {1, 2, 3, 4};
-		//List<Integer> intList = java.util.Arrays.asList(ints);
-		//JList deviceListView = new JList(ints);
 		deviceListModel = new DefaultListModel();
 		deviceListView = new JList();
+		deviceListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		deviceListView.setModel(deviceListModel);
 		deviceListView.setCellRenderer(new DeviceListCellRenderer());
+		deviceListView.addListSelectionListener(this);
 		
 		// initialize components
 		listButton = new JButton("List Devices");
@@ -84,13 +98,19 @@ public class HidControlPanel extends JPanel implements ActionListener {
 		clearButton = new JButton("Clear");
 		clearButton.addActionListener(this);
 		clearSelButton = new JButton("Clear Selection");
+		clearSelButton.addActionListener(this);
+		readDevButton = new JButton("Read Device");
+		readDevButton.addActionListener(this);
+		textArea = new JTextArea("sample text");
 		
 		// arrange components
 		this.add(listButton);
 		this.add(testButton, "wrap");
 		this.add(clearButton);
 		this.add(clearSelButton, "wrap");
+		this.add(readDevButton, "wrap");
 		this.add(deviceListView, "span 4");
+		this.add(textArea, "span 3");
 	}
 	
 	protected class DeviceListCellRenderer extends DefaultListCellRenderer
@@ -134,9 +154,63 @@ public class HidControlPanel extends JPanel implements ActionListener {
 			deviceListModel.clear();
 		} else if (source == this.clearSelButton) {
 			deviceListView.clearSelection();
+		} else if (source == this.readDevButton) {
+			toggleReadDevice();
 		}
 	}
 	
+	private void toggleReadDevice()	{
+		if (isReadingDevice == false) {
+			// attempt to start reading from device
+			Object selectedValue = deviceListView.getSelectedValue();
+			if (selectedValue == null) {
+				return;
+			}
+			if (selectedValue instanceof HIDDeviceInfo) {
+				HIDDeviceInfo devInfo = (HIDDeviceInfo) selectedValue;
+				try {
+					hidDevice = HIDManager.openById(devInfo.getVendor_id(), devInfo.getProduct_id(), devInfo.getSerial_number());
+				} catch (HIDDeviceNotFoundException ex) {
+					System.err.println("Device not found!");
+					ex.printStackTrace();
+					return;
+				} catch (IOException ex) {
+					ex.printStackTrace();
+					return;
+				}
+				// TODO: start reading here
+				byte[] buffer = new byte[256];
+				isReadingDevice = true;
+				try {
+					int retVal = 0;
+					hidDevice.disableBlocking();
+					System.out.println("About to make read call...");
+					retVal = hidDevice.read(buffer);
+					System.out.println("Returned from read call; returned " + retVal);
+					this.textArea.setText(buffer.toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			// stop reading from device
+			if (hidDevice != null) {
+				try {
+					hidDevice.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				isReadingDevice = false;
+				hidDevice = null;
+			}
+		}
+	}
+	
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO
+	}
+
 	/**
 	 * @param args
 	 */
@@ -145,7 +219,7 @@ public class HidControlPanel extends JPanel implements ActionListener {
 		JFrame frame = new JFrame("HID Control Panel Test");
 		HidControlPanel devicePanel = new HidControlPanel();
 		frame.setContentPane(devicePanel);
-		frame.setSize(400, 300);
+		frame.setSize(800, 600);
 		frame.setVisible(true);
 		
 	}
