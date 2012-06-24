@@ -1,6 +1,7 @@
 package bdouble;
 
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.LayoutManager;
 
 import javax.swing.JFrame;
@@ -56,7 +57,20 @@ public class DisplayPanel extends JPanel {
      * Should only be called by constructors
      */
     protected void initialize() {
+        this.setBackground(Color.WHITE);
+    }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // try drawing a rectangle
+        int x = 30;
+        int y = 50;
+        final int width = 80;
+        final int height = 120;
+        g.setColor(Color.GREEN);
+        g.fill3DRect(x, y, width, height, true);
     }
 
     /**
@@ -66,11 +80,11 @@ public class DisplayPanel extends JPanel {
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("DisplayPanel Test");
-        frame.setLayout(new FlowLayout());
         frame.setBounds(0, 0, 600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.add(new DisplayPanel());
+        DisplayPanel display = new DisplayPanel();
+        frame.add(display);
         frame.setVisible(true);
     }
 
