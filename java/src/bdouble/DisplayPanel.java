@@ -5,11 +5,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class DisplayPanel extends JPanel {
 
@@ -17,6 +22,11 @@ public class DisplayPanel extends JPanel {
      * UID for serialization
      */
     private static final long serialVersionUID = -1003207808361971057L;
+
+    /**
+     * Demo: location of truck relative to origin
+     */
+    private Point truckPosition;
 
     /**
      * Default Constructor
@@ -56,11 +66,24 @@ public class DisplayPanel extends JPanel {
         initialize();
     }
 
+    public Point getTruckPosition() {
+        return truckPosition;
+    }
+
+    public void setTruckPosition(Point truckPosition) {
+        this.truckPosition = truckPosition;
+    }
+
+    public void setTruckPosition(int x, int y) {
+        setTruckPosition(new Point(x, y));
+    }
+
     /**
      * Helper method to setup components.<p>
      * Should only be called by constructors
      */
     protected void initialize() {
+        truckPosition = new Point(0, 0);
         this.setBackground(Color.WHITE);
     }
 
@@ -80,6 +103,11 @@ public class DisplayPanel extends JPanel {
         AffineTransform transform1 = new AffineTransform(transform0);
         transform1.translate(dx, dy);
         g2.setTransform(transform1);
+
+        // translate the road relative to the "truck"
+        AffineTransform transform2 = new AffineTransform(transform1);
+        transform2.translate(this.truckPosition.getX(), this.truckPosition.getY());
+        g2.setTransform(transform2);
 
         // draw some "road markers"
         Stroke roadStroke = new BasicStroke(10);
@@ -102,6 +130,7 @@ public class DisplayPanel extends JPanel {
         }
 
         // draw rectangle around the origin
+        g2.setTransform(transform1);
         final int rectWidth = 80;
         final int rectHeight = 120;
         final int rectX = 0 - rectWidth / 2;
@@ -123,9 +152,24 @@ public class DisplayPanel extends JPanel {
         frame.setBounds(0, 0, 600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        DisplayPanel display = new DisplayPanel();
+        final DisplayPanel display = new DisplayPanel();
         frame.add(display);
         frame.setVisible(true);
+
+        // Demo: make a timer to demo animation
+        final int delayMs = 100;
+        ActionListener timerListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Point truckPosition = display.getTruckPosition();
+                final int x = (int) truckPosition.getX();
+                final int y = (int) truckPosition.getY() + 5;
+                display.setTruckPosition(x, y);
+                display.repaint();
+            }
+        };
+        javax.swing.Timer demoTimer = new Timer(delayMs, timerListener);
+        demoTimer.start();
     }
 
 }
