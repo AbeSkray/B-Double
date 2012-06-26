@@ -94,6 +94,9 @@ public class DisplayPanel extends JPanel {
         // get a Graphics2D reference
         Graphics2D g2 = (Graphics2D) g;
 
+        // set the clipping area
+        g2.setClip(0, 0, this.getWidth(), this.getHeight());
+
         // save the transform
         final AffineTransform transform0 = g2.getTransform();
 
