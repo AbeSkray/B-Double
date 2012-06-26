@@ -74,10 +74,12 @@ public class DisplayPanel extends JPanel {
         // save the transform
         final AffineTransform transform0 = g2.getTransform();
 
-        // translate the rectangle to display center
+        // translate the origin to display center
         final int dx = this.getWidth() / 2;
         final int dy = this.getHeight() / 2;
-        g2.translate(dx, dy);
+        AffineTransform transform1 = new AffineTransform(transform0);
+        transform1.translate(dx, dy);
+        g2.setTransform(transform1);
 
         // draw some "road markers"
         Stroke roadStroke = new BasicStroke(10);
