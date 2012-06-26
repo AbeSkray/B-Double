@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -70,6 +71,9 @@ public class DisplayPanel extends JPanel {
         // get a Graphics2D reference
         Graphics2D g2 = (Graphics2D) g;
 
+        // save the transform
+        final AffineTransform transform0 = g2.getTransform();
+
         // translate the rectangle to display center
         final int dx = this.getWidth() / 2;
         final int dy = this.getHeight() / 2;
@@ -102,6 +106,9 @@ public class DisplayPanel extends JPanel {
         final int rectY = 0 - rectHeight / 2;
         g2.setColor(Color.GREEN);
         g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
+
+        // restore original transform
+        g2.setTransform(transform0);
     }
 
     /**
