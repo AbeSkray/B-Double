@@ -2,6 +2,7 @@ package bdouble;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 
 import javax.swing.JFrame;
@@ -64,13 +65,22 @@ public class DisplayPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // try drawing a rectangle
-        int x = 30;
-        int y = 50;
-        final int width = 80;
-        final int height = 120;
-        g.setColor(Color.GREEN);
-        g.fill3DRect(x, y, width, height, true);
+        // get a Graphics2D reference
+        Graphics2D g2 = (Graphics2D) g;
+
+        // translate the rectangle to display center
+        final int dx = this.getWidth() / 2;
+        final int dy = this.getHeight() / 2;
+        g2.translate(dx, dy);
+
+        // draw rectangle around the origin
+        final int rectWidth = 80;
+        final int rectHeight = 120;
+        final int rectX = 0 - rectWidth / 2;
+        final int rectY = 0 - rectHeight / 2;
+        g2.setColor(Color.GREEN);
+        g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
+
     }
 
     /**
