@@ -1,9 +1,11 @@
 package bdouble;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.Stroke;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -73,6 +75,26 @@ public class DisplayPanel extends JPanel {
         final int dy = this.getHeight() / 2;
         g2.translate(dx, dy);
 
+        // draw some "road markers"
+        Stroke roadStroke = new BasicStroke(10);
+        g2.setStroke(roadStroke);
+        g2.setColor(Color.BLACK);
+        final int roadLeft = -150;
+        final int roadRight = 150;
+        final int roadStart = -500;
+        final int roadEnd = 500;
+        g2.drawLine(roadLeft, roadStart, roadLeft, roadEnd);
+        g2.drawLine(roadRight, roadStart, roadRight, roadEnd);
+        g2.setColor(Color.YELLOW);
+        final int dividerLength = 35;
+        final int dividerSpace = 50;
+        for (int i = roadStart; i < roadEnd; ) {
+            // draw median
+            int j = i + dividerLength;
+            g2.drawLine(0, i, 0, j);
+            i = j + dividerSpace;
+        }
+
         // draw rectangle around the origin
         final int rectWidth = 80;
         final int rectHeight = 120;
@@ -80,7 +102,6 @@ public class DisplayPanel extends JPanel {
         final int rectY = 0 - rectHeight / 2;
         g2.setColor(Color.GREEN);
         g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
-
     }
 
     /**
