@@ -12,7 +12,6 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,6 +29,14 @@ public class DisplayPanel extends JPanel {
      * Demo: location of truck relative to origin
      */
     private Point truckPosition;
+
+    /**
+     * Scalar for scaling the world view
+     */
+    private double scaleFactor;
+
+    private JButton zoomInButton;
+    private JButton zoomOutButton;
 
     /**
      * Default Constructor
@@ -81,12 +88,90 @@ public class DisplayPanel extends JPanel {
         setTruckPosition(new Point(x, y));
     }
 
+    private void setScaleFactor(double scaleFactor) {
+        assert(scaleFactor > 0);
+        this.scaleFactor = scaleFactor;
+    }
+
+    private enum ZoomLevel {
+        ONE,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE
+    }
+
+    private ZoomLevel zoomLevel;
+
+    private void setZoomLevel(ZoomLevel zoomLevel) {
+        this.zoomLevel = zoomLevel;
+        switch (zoomLevel) {
+        case ONE:
+            setScaleFactor(1.0);
+            break;
+        case TWO:
+            setScaleFactor(0.8);
+            break;
+        case THREE:
+            setScaleFactor(0.5);
+            break;
+        case FOUR:
+            setScaleFactor(0.25);
+            break;
+        case FIVE:
+            setScaleFactor(0.1);
+            break;
+        }
+    }
+
+    public void zoomIn() {
+        switch (zoomLevel) {
+        case FIVE:
+            setZoomLevel(ZoomLevel.FOUR);
+            break;
+        case FOUR:
+            setZoomLevel(ZoomLevel.THREE);
+            break;
+        case THREE:
+            setZoomLevel(ZoomLevel.TWO);
+            break;
+        case TWO:
+            setZoomLevel(ZoomLevel.ONE);
+            break;
+        case ONE:
+        default:
+            // do nothing
+        }
+    }
+
+    public void zoomOut() {
+        switch (zoomLevel) {
+        case ONE:
+            setZoomLevel(ZoomLevel.TWO);
+            break;
+        case TWO:
+            setZoomLevel(ZoomLevel.THREE);
+            break;
+        case THREE:
+            setZoomLevel(ZoomLevel.FOUR);
+            break;
+        case FOUR:
+            setZoomLevel(ZoomLevel.FIVE);
+            break;
+        case FIVE:
+        default:
+            // do nothing
+        }
+    }
+
     /**
      * Helper method to setup components.<p>
      * Should only be called by constructors
      */
     protected void initialize() {
         truckPosition = new Point(0, 0);
+        scaleFactor = 1.0;
+        zoomLevel = ZoomLevel.ONE;
         this.setBackground(Color.WHITE);
     }
 
@@ -108,7 +193,7 @@ public class DisplayPanel extends JPanel {
         final int dy = this.getHeight() / 2;
         AffineTransform transform1 = new AffineTransform(transform0);
         transform1.translate(dx, dy);
-        transform1.scale(1, -1);
+        transform1.scale(scaleFactor, -scaleFactor);
         g2.setTransform(transform1);
 
         // translate the road relative to the "truck"
@@ -179,7 +264,10 @@ public class DisplayPanel extends JPanel {
 
         // Add a button panel
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setPreferredSize(new Dimension(100, 100));
+        buttonPanel.setPreferredSize(new Dimension(120, 120));
+        frame.add(buttonPanel, BorderLayout.EAST);
+
+        // Add button to start/stop animation
         final JButton goButton = new JButton("Start");
         ActionListener goButtonListener = new ActionListener() {
             @Override
@@ -198,7 +286,31 @@ public class DisplayPanel extends JPanel {
         };
         goButton.addActionListener(goButtonListener);
         buttonPanel.add(goButton);
-        frame.add(buttonPanel, BorderLayout.EAST);
+
+        // Add buttons to control zoom
+        JButton zoomInButton = new JButton("Zoom In");
+        JButton zoomOutButton = new JButton("Zoom Out");
+        zoomInButton.setPreferredSize(new Dimension(110, 30));
+        zoomOutButton.setPreferredSize(new Dimension(110, 30));
+        ActionListener zoomInListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                display.zoomIn();
+                display.repaint();
+            }
+        };
+        zoomInButton.addActionListener(zoomInListener);
+        ActionListener zoomOutListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                display.zoomOut();
+                display.repaint();
+            }
+        };
+        zoomOutButton.addActionListener(zoomOutListener);
+        buttonPanel.add(zoomInButton);
+        buttonPanel.add(zoomOutButton);
+
         frame.setVisible(true);
     }
 
