@@ -1,7 +1,9 @@
 package bdouble;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -12,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -155,10 +158,10 @@ public class DisplayPanel extends JPanel {
         JFrame frame = new JFrame("DisplayPanel Test");
         frame.setBounds(0, 0, 600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
         final DisplayPanel display = new DisplayPanel();
-        frame.add(display);
-        frame.setVisible(true);
+        frame.add(display, BorderLayout.CENTER);
 
         // Demo: make a timer to demo animation
         final int delayMs = 100;
@@ -172,8 +175,31 @@ public class DisplayPanel extends JPanel {
                 display.repaint();
             }
         };
-        javax.swing.Timer demoTimer = new Timer(delayMs, timerListener);
-        demoTimer.start();
+        final Timer demoTimer = new Timer(delayMs, timerListener);
+
+        // Add a button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setPreferredSize(new Dimension(100, 100));
+        final JButton goButton = new JButton("Start");
+        ActionListener goButtonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JButton button = (JButton) ae.getSource();
+                if (demoTimer.isRunning()) {
+                    // stop!
+                    demoTimer.stop();
+                    button.setText("Start");
+                } else {
+                    // go!
+                    demoTimer.start();
+                    button.setText("Stop");
+                }
+            }
+        };
+        goButton.addActionListener(goButtonListener);
+        buttonPanel.add(goButton);
+        frame.add(buttonPanel, BorderLayout.EAST);
+        frame.setVisible(true);
     }
 
 }
