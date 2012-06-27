@@ -100,16 +100,17 @@ public class DisplayPanel extends JPanel {
         // save the transform
         final AffineTransform transform0 = g2.getTransform();
 
-        // translate the origin to display center
+        // translate the origin to display center and invert it
         final int dx = this.getWidth() / 2;
         final int dy = this.getHeight() / 2;
         AffineTransform transform1 = new AffineTransform(transform0);
         transform1.translate(dx, dy);
+        transform1.scale(1, -1);
         g2.setTransform(transform1);
 
         // translate the road relative to the "truck"
         AffineTransform transform2 = new AffineTransform(transform1);
-        transform2.translate(this.truckPosition.getX(), this.truckPosition.getY());
+        transform2.translate(-this.truckPosition.getX(), -this.truckPosition.getY());
         g2.setTransform(transform2);
 
         // draw some "road markers"
