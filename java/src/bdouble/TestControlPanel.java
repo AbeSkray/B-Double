@@ -21,6 +21,11 @@ import javax.swing.JSlider;
 public class TestControlPanel extends JPanel {
 
     /**
+     * UID for serialization
+     */
+    private static final long serialVersionUID = -4133819999840859974L;
+
+    /**
      * Default Constructor
      */
     public TestControlPanel() {
