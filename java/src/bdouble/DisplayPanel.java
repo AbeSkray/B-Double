@@ -35,9 +35,6 @@ public class DisplayPanel extends JPanel {
      */
     private double scaleFactor;
 
-    private JButton zoomInButton;
-    private JButton zoomOutButton;
-
     /**
      * Default Constructor
      */
@@ -185,22 +182,43 @@ public class DisplayPanel extends JPanel {
         // set the clipping area
         g2.setClip(0, 0, this.getWidth(), this.getHeight());
 
-        // save the transform
-        final AffineTransform transform0 = g2.getTransform();
+        // save the original transform
+        final AffineTransform initialTransform = g2.getTransform();
 
-        // translate the origin to display center and invert it
+        // create a truck transform
+        // translate the origin to the center of display area
+        // flip the y-axis so north is up
+        // apply scale factor controlled by zoom
         final int dx = this.getWidth() / 2;
         final int dy = this.getHeight() / 2;
-        AffineTransform transform1 = new AffineTransform(transform0);
-        transform1.translate(dx, dy);
-        transform1.scale(scaleFactor, -scaleFactor);
-        g2.setTransform(transform1);
+        AffineTransform truckTansform = new AffineTransform(initialTransform);
+        truckTansform.translate(dx, dy);
+        truckTansform.scale(scaleFactor, -scaleFactor);
+        g2.setTransform(truckTansform);
 
-        // translate the road relative to the "truck"
-        AffineTransform transform2 = new AffineTransform(transform1);
-        transform2.translate(-this.truckPosition.getX(), -this.truckPosition.getY());
-        g2.setTransform(transform2);
+        // create a world transform
+        // translate the world relative to the truck's position
+        AffineTransform worldTransform = new AffineTransform(truckTansform);
+        worldTransform.translate(-this.truckPosition.getX(), -this.truckPosition.getY());
 
+        // draw the world
+        g2.setTransform(worldTransform);
+        paintWorld(g2);
+
+        // draw the truck
+        g2.setTransform(truckTansform);
+        paintTruck(g2);
+
+        // restore original transform
+        g2.setTransform(initialTransform);
+    }
+
+    /**
+     * Helper method called by {@link paintComponent}
+     *
+     * @param g2
+     */
+    private void paintWorld(Graphics2D g2) {
         // draw some "road markers"
         Stroke roadStroke = new BasicStroke(10);
         g2.setStroke(roadStroke);
@@ -220,18 +238,21 @@ public class DisplayPanel extends JPanel {
             g2.drawLine(0, i, 0, j);
             i = j + dividerSpace;
         }
+    }
 
-        // draw rectangle around the origin
-        g2.setTransform(transform1);
+    /**
+     * Helper method called by {@link paintComponent}
+     *
+     * @param g2
+     */
+    private void paintTruck(Graphics2D g2) {
+        // draw truck around the origin
         final int rectWidth = 80;
         final int rectHeight = 120;
         final int rectX = 0 - rectWidth / 2;
         final int rectY = 0 - rectHeight / 2;
         g2.setColor(Color.GREEN);
         g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
-
-        // restore original transform
-        g2.setTransform(transform0);
     }
 
     /**
