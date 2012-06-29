@@ -20,8 +20,8 @@ public class KeyboardController
     extends KeyAdapter
     implements Controller
 {
-
-    private Transmission transmission;
+    private boolean driveKeyIsDown = false;
+    private boolean reverseKeyIsDown = false;
 
     private boolean leftKeyIsDown = false;
     private boolean rightKeyIsDown = false;
@@ -31,7 +31,6 @@ public class KeyboardController
      */
     public KeyboardController() {
         super();
-        this.transmission = Transmission.NEUTRAL;
     }
 
     @Override
@@ -47,20 +46,40 @@ public class KeyboardController
 
     @Override
     public Transmission getTransmissionInput() {
-        return this.transmission;
+        Transmission result = Transmission.NEUTRAL;
+        if (driveKeyIsDown && !reverseKeyIsDown) {
+            result = Transmission.DRIVE_1;
+        } else if (reverseKeyIsDown && !driveKeyIsDown) {
+            result = Transmission.REVERSE_1;
+        }
+        return result;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         final int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
+        switch (keyCode) {
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_A:
             this.leftKeyIsDown = true;
             e.consume();
-        }
-        if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
+            break;
+        case KeyEvent.VK_RIGHT:
             this.rightKeyIsDown = true;
             e.consume();
+        case KeyEvent.VK_D:
+            break;
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_W:
+            this.driveKeyIsDown = true;
+            e.consume();
+            break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_S:
+            this.reverseKeyIsDown = true;
+            e.consume();
+            break;
         }
     }
 
@@ -68,13 +87,27 @@ public class KeyboardController
     public void keyReleased(KeyEvent e) {
         final int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) {
+        switch (keyCode) {
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_A:
             this.leftKeyIsDown = false;
             e.consume();
-        }
-        if (keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) {
+            break;
+        case KeyEvent.VK_RIGHT:
             this.rightKeyIsDown = false;
             e.consume();
+        case KeyEvent.VK_D:
+            break;
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_W:
+            this.driveKeyIsDown = false;
+            e.consume();
+            break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_S:
+            this.reverseKeyIsDown = false;
+            e.consume();
+            break;
         }
     }
 
@@ -133,6 +166,19 @@ public class KeyboardController
                 case CENTER:
                 default:
                     steeringView.setText("Steer center");
+                }
+
+                final Transmission transmission = controller.getTransmissionInput();
+                switch (transmission) {
+                case REVERSE_1:
+                    transmissionView.setText("R");
+                    break;
+                case DRIVE_1:
+                    transmissionView.setText("D");
+                    break;
+                case NEUTRAL:
+                    transmissionView.setText("N");
+                    break;
                 }
             }
         };
