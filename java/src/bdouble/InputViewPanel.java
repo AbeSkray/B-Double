@@ -1,6 +1,6 @@
 package bdouble;
 
-import java.awt.GridBagConstraints;
+// import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.LayoutManager;
 
@@ -12,6 +12,11 @@ import javax.swing.JPanel;
  * @author aknowles
  */
 public class InputViewPanel extends JPanel {
+
+    /**
+     * UID for serialization
+     */
+    private static final long serialVersionUID = 3135184995712717228L;
 
     /**
      * Default Constructor
@@ -60,7 +65,7 @@ public class InputViewPanel extends JPanel {
      */
     private void initialize() {
         this.setLayout(new GridBagLayout());
-        GridBagConstraints c = null;
+        // GridBagConstraints c = null;
 
         // Steering view
 

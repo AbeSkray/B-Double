@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class BDoubleFrame extends JFrame {
