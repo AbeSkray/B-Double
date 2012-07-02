@@ -244,13 +244,17 @@ public class DisplayPanel extends JPanel {
      */
     private void paintTruck(Graphics2D g2) {
         // draw truck with nose at origin
-        final Rectangle cabBoundingBox = this.truckModel.getCabBoundingBox();
-        final int rectWidth = cabBoundingBox.width;
-        final int rectHeight = cabBoundingBox.height;
-        final int rectX = -cabBoundingBox.width / 2;
-        final int rectY = -cabBoundingBox.height;
+        final Rectangle cab = this.truckModel.getCabBoundingBox();
+
+        // the view coordinate system is flipped about the y-axis
+        // (in relation to the truck and world coordinates),
+        // so we actually pass in the bottom-left corner to Graphics2D
+        // (instead of the top-left corner)
+        final int cabX = -cab.width / 2;
+        final int cabY = -cab.height;
+
         g2.setColor(Color.GREEN);
-        g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
+        g2.fill3DRect(cabX, cabY, cab.width, cab.height, true);
     }
 
     /**
