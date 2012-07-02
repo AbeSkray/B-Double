@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,9 +27,9 @@ public class DisplayPanel extends JPanel {
     private static final long serialVersionUID = -1003207808361971057L;
 
     /**
-     * Demo: location of truck relative to origin
+     * Representation of the truck (cab, A-trailer, and B-trailer)
      */
-    private Point truckPosition;
+    private Model truckModel;
 
     /**
      * Scalar for scaling the world view
@@ -73,16 +74,8 @@ public class DisplayPanel extends JPanel {
         initialize();
     }
 
-    public Point getTruckPosition() {
-        return truckPosition;
-    }
-
-    public void setTruckPosition(Point truckPosition) {
-        this.truckPosition = truckPosition;
-    }
-
-    public void setTruckPosition(int x, int y) {
-        setTruckPosition(new Point(x, y));
+    public void setModel(Model model) {
+        this.truckModel = model;
     }
 
     private void setScaleFactor(double scaleFactor) {
@@ -166,7 +159,6 @@ public class DisplayPanel extends JPanel {
      * Should only be called by constructors
      */
     protected void initialize() {
-        truckPosition = new Point(0, 0);
         scaleFactor = 1.0;
         zoomLevel = ZoomLevel.ONE;
         this.setBackground(Color.WHITE);
@@ -199,7 +191,12 @@ public class DisplayPanel extends JPanel {
         // create a world transform
         // translate the world relative to the truck's position
         AffineTransform worldTransform = new AffineTransform(truckTansform);
-        worldTransform.translate(-this.truckPosition.getX(), -this.truckPosition.getY());
+        final Rectangle cabBoundingBox = this.truckModel.getCabBoundingBox();
+        final int cabLocationX = cabBoundingBox.x + cabBoundingBox.width / 2;
+        final int cabLocationY = cabBoundingBox.y;
+        final int world_dx = -cabLocationX;
+        final int world_dy = -cabLocationY;
+        worldTransform.translate(world_dx, world_dy);
 
         // draw the world
         g2.setTransform(worldTransform);
@@ -246,11 +243,12 @@ public class DisplayPanel extends JPanel {
      * @param g2
      */
     private void paintTruck(Graphics2D g2) {
-        // draw truck around the origin
-        final int rectWidth = 80;
-        final int rectHeight = 120;
-        final int rectX = 0 - rectWidth / 2;
-        final int rectY = 0 - rectHeight / 2;
+        // draw truck with nose at origin
+        final Rectangle cabBoundingBox = this.truckModel.getCabBoundingBox();
+        final int rectWidth = cabBoundingBox.width;
+        final int rectHeight = cabBoundingBox.height;
+        final int rectX = -cabBoundingBox.width / 2;
+        final int rectY = -cabBoundingBox.height;
         g2.setColor(Color.GREEN);
         g2.fill3DRect(rectX, rectY, rectWidth, rectHeight, true);
     }
@@ -269,15 +267,36 @@ public class DisplayPanel extends JPanel {
         final DisplayPanel display = new DisplayPanel();
         frame.add(display, BorderLayout.CENTER);
 
+        // Define a dummy truck model
+        class TestModel implements Model {
+            private Rectangle cabBoundingBox = new Rectangle(-40, 0, 80, 120);
+            @Override
+            public Rectangle getCabBoundingBox() {
+                return cabBoundingBox;
+            }
+            public void moveCab(Point vector){
+                cabBoundingBox.translate(vector.x, vector.y);
+            }
+            @Override
+            public double getCabHeading() { return 0; }
+            @Override
+            public Rectangle getTrailerABoundingBox() { return null; }
+            @Override
+            public double getTrailerAHeading() { return 0; }
+            @Override
+            public Rectangle getTrailerBBoundingBox() { return null; }
+            @Override
+            public double getTrailerBHeading() { return 0; }
+        };
+        final TestModel model = new TestModel();
+        display.setModel(model);
+
         // Demo: make a timer to demo animation
         final int delayMs = 100;
         ActionListener timerListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Point truckPosition = display.getTruckPosition();
-                final int x = (int) truckPosition.getX();
-                final int y = (int) truckPosition.getY() + 5;
-                display.setTruckPosition(x, y);
+                model.moveCab(new Point(0, 5));
                 display.repaint();
             }
         };
