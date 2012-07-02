@@ -5,6 +5,15 @@ import java.awt.Rectangle;
 /**
  * Interface for a B-Double Truck model.
  * This is what the View expects from the Model.
+ *
+ * The World model coordinate system is such that x increases towards East
+ * and y increases towards North.
+ *
+ * This is counter to typical view coordinate systems where the origin is
+ * the top-left corner with y increasing in the downward direction.
+ *
+ * Example: if you are moving north (0 heading) your y value increases.
+ * If you are moving east (90 heading) your x values increases.
  */
 public interface Model {
 
