@@ -272,26 +272,6 @@ public class DisplayPanel extends JPanel {
         frame.add(display, BorderLayout.CENTER);
 
         // Define a dummy truck model
-        class TestModel implements Model {
-            private Rectangle cabBoundingBox = new Rectangle(-40, 0, 80, 120);
-            @Override
-            public Rectangle getCabBoundingBox() {
-                return cabBoundingBox;
-            }
-            public void moveCab(Point vector){
-                cabBoundingBox.translate(vector.x, vector.y);
-            }
-            @Override
-            public double getCabHeading() { return 0; }
-            @Override
-            public Rectangle getTrailerABoundingBox() { return null; }
-            @Override
-            public double getTrailerAHeading() { return 0; }
-            @Override
-            public Rectangle getTrailerBBoundingBox() { return null; }
-            @Override
-            public double getTrailerBHeading() { return 0; }
-        };
         final TestModel model = new TestModel();
         display.setModel(model);
 
